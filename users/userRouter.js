@@ -93,7 +93,7 @@ async function validateUserId(req, res, next) {
   if (user) {
     req.user = user;
   } else {
-    res.status(400).json({ message: "Invalid user id" });
+    return res.status(400).json({ message: "Invalid user id" });
   }
   next();
 }
@@ -101,10 +101,10 @@ async function validateUserId(req, res, next) {
 function validateUser(req, res, next) {
   if (req.body) {
     if (!req.body.name) {
-      res.status(400).json({ message: "Missing required name field" });
+      return res.status(400).json({ message: "Missing required name field" });
     }
   } else {
-    res.status(400).json({ message: "Missing user data" });
+    return res.status(400).json({ message: "Missing user data" });
   }
   next();
 }
@@ -112,10 +112,10 @@ function validateUser(req, res, next) {
 function validatePost(req, res, next) {
   if (req.body) {
     if (!req.body.text) {
-      res.status(400).json({ message: "Missing required text field" });
+      return res.status(400).json({ message: "Missing required text field" });
     }
   } else {
-    res.status(400).json({ message: "Missing post data" });
+    return res.status(400).json({ message: "Missing post data" });
   }
   next();
 }
