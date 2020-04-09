@@ -14,8 +14,13 @@ router.get('/', (req, res) => {
   // do your magic!
 });
 
-router.get('/:id', (req, res) => {
-  // do your magic!
+router.get("/:id", validateUserId, async (req, res) => {
+  try {
+    const user = await getById(req.params.id);
+    res.status(200).json(user);
+  } catch (err) {
+    res.status(404).json({ message: "The user wasn't found", error: err });
+  }
 });
 
 router.get('/:id/posts', (req, res) => {
