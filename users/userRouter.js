@@ -10,8 +10,13 @@ router.post('/:id/posts', (req, res) => {
   // do your magic!
 });
 
-router.get('/', (req, res) => {
-  // do your magic!
+router.get("/", async (req, res) => {
+  try {
+    const users = await get();
+    res.status(200).json(users);
+  } catch (err) {
+    res.status(404).json({ message: "No users were found", error: err });
+  }
 });
 
 router.get("/:id", validateUserId, async (req, res) => {
@@ -23,15 +28,15 @@ router.get("/:id", validateUserId, async (req, res) => {
   }
 });
 
-router.get('/:id/posts', (req, res) => {
+router.get("/:id/posts", (req, res) => {
   // do your magic!
 });
 
-router.delete('/:id', (req, res) => {
+router.delete("/:id", (req, res) => {
   // do your magic!
 });
 
-router.put('/:id', (req, res) => {
+router.put("/:id", (req, res) => {
   // do your magic!
 });
 
@@ -43,7 +48,7 @@ async function validateUserId(req, res, next) {
   if (user) {
     req.user = user;
   } else {
-    res.status(400).json({ message: "Invalid user id" })
+    res.status(400).json({ message: "Invalid user id" });
   }
   next();
 }
