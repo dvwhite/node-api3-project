@@ -1,9 +1,7 @@
-const express = require('express');
+const express = require("express");
 
 const router = express.Router();
 
-router.post('/', (req, res) => {
-  // do your magic!
 const {
   get,
   getById,
@@ -12,9 +10,21 @@ const {
   update,
   remove,
 } = require("./userDb");
+
+// Routing
+router.post("/", validateUser, async (req, res) => {
+  try {
+    const newUser = await insert({ name: req.body.name });
+    res.status(201).json(newUser);
+  } catch (err) {
+    res.status(500).json({
+      message: "There was an error adding the user.",
+      error: err,
+    });
+  }
 });
 
-router.post('/:id/posts', (req, res) => {
+router.post("/:id/posts", (req, res) => {
   // do your magic!
 });
 
