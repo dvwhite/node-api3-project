@@ -2,6 +2,7 @@ const express = require("express");
 
 const router = express.Router();
 
+// Db helpers
 const {
   get,
   getById,
@@ -10,6 +11,7 @@ const {
   update,
   remove,
 } = require("./userDb");
+const postDb = require("./../posts/postDb");
 
 // Routing
 router.post("/", validateUser, async (req, res) => {
@@ -24,8 +26,16 @@ router.post("/", validateUser, async (req, res) => {
   }
 });
 
-router.post("/:id/posts", (req, res) => {
-  // do your magic!
+router.post("/:id/posts", validateUserId, validatePost, async (req, res) => {
+  try {
+    const newPost = await postDb.insert(req.body);
+    res.status(201).json(newPost);
+  } catch (err) {
+    res.status(500).json({
+      message: "There was an error adding the post.",
+      error: err,
+    });
+  }
 });
 
 router.get("/", async (req, res) => {
@@ -33,7 +43,7 @@ router.get("/", async (req, res) => {
     const users = await get();
     res.status(200).json(users);
   } catch (err) {
-    res.status(404).json({ message: "No users were found", error: err });
+    res.status(404).json({ message: "No users were found" });
   }
 });
 
@@ -42,20 +52,37 @@ router.get("/:id", validateUserId, async (req, res) => {
     const user = await getById(req.params.id);
     res.status(200).json(user);
   } catch (err) {
-    res.status(404).json({ message: "The user wasn't found", error: err });
+    res.status(404).json({ message: "The user wasn't found" });
   }
 });
 
-router.get("/:id/posts", (req, res) => {
-  // do your magic!
+router.get("/:id/posts", validateUserId, async (req, res) => {
+  try {
+    const userPosts = await getUserPosts(req.params.id);
+    res.status(200).json(userPosts);
+  } catch (err) {
+    res
+      .status(500)
+      .json({ message: "Error retrieving the user's posts" });
+  }
 });
 
-router.delete("/:id", (req, res) => {
-  // do your magic!
+router.delete("/:id", validateUserId, async (req, res) => {
+  try {
+    await remove(req.params.id)
+    res.status(204).end();
+  } catch (err) {
+    res.status(500).json({ message: "Error deleting the user" });
+  }
 });
 
-router.put("/:id", (req, res) => {
-  // do your magic!
+router.put("/:id", validateUserId, async (req, res) => {
+  try {
+    const updatedUser = await update(req.params.id);
+    res.status(200).json(updatedUser);
+  } catch (err) {
+    res.status(500).json({ message: "Error updating the user" });
+  }
 });
 
 //custom middleware
@@ -83,7 +110,14 @@ function validateUser(req, res, next) {
 }
 
 function validatePost(req, res, next) {
-  // do your magic!
+  if (req.body) {
+    if (!req.body.text) {
+      res.status(400).json({ message: "Missing required text field" });
+    }
+  } else {
+    res.status(400).json({ message: "Missing post data" });
+  }
+  next();
 }
 
 module.exports = router;
