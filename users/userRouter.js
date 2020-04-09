@@ -78,8 +78,8 @@ router.delete("/:id", validateUserId, async (req, res) => {
 
 router.put("/:id", validateUserId, async (req, res) => {
   try {
-    const updatedUser = await update(req.params.id);
-    res.status(200).json(updatedUser);
+    const updatedUser = await update(req.params.id, req.body);
+    res.status(204).end();
   } catch (err) {
     res.status(500).json({ message: "Error updating the user" });
   }
