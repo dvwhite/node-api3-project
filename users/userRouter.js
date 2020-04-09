@@ -4,6 +4,14 @@ const router = express.Router();
 
 router.post('/', (req, res) => {
   // do your magic!
+const {
+  get,
+  getById,
+  getUserPosts,
+  insert,
+  update,
+  remove,
+} = require("./userDb");
 });
 
 router.post('/:id/posts', (req, res) => {
