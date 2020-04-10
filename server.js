@@ -9,7 +9,9 @@ server.use(logger);
 
 // Routes
 const userRoutes = require('./users/userRouter.js');
+const postRoutes = require('./posts/postRouter.js');
 server.use('/users', userRoutes);
+server.use('/posts', postRoutes);
 
 //custom middleware
 
