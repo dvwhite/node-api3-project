@@ -14,8 +14,14 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.get('/:id', (req, res) => {
-  // do your magic!
+router.get("/:id", validatePostId, async (req, res) => {
+  try {
+    const post = await getById(req.params.id);
+    res.status(200).json(post);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: "Could not get the post" });
+  }
 });
 
 router.delete('/:id', (req, res) => {
