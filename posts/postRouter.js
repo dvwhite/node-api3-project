@@ -20,8 +20,29 @@ router.put('/:id', (req, res) => {
 
 // custom middleware
 
-function validatePostId(req, res, next) {
-  // do your magic!
+async function validatePostId(req, res, next) {
+  try {
+    const post = await getById(Number(req.params.id));
+    if (post) {
+      req.post = post;
+    } else {
+      return res.status(400).json({ message: "Invalid post id" });
+    }
+    next();
+  } catch {
+    return res.status(500).json({ message: "Could not validate post id" });
+  }
+}
+
+function validatePost(req, res, next) {
+  if (req.body) {
+    if (!req.body.text) {
+      return res.status(400).json({ message: "Missing required text field" });
+    }
+  } else {
+    return res.status(400).json({ message: "Missing post data" });
+  }
+  next();
 }
 
 module.exports = router;
