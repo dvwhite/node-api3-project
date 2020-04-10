@@ -1,9 +1,17 @@
-const express = require('express');
+const express = require("express");
 
 const router = express.Router();
 
-router.get('/', (req, res) => {
-  // do your magic!
+const { get, getById, update, remove } = require("./postDb");
+
+router.get("/", async (req, res) => {
+  try {
+    const posts = await get();
+    res.status(200).json(posts);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: "Could not get the posts" });
+  }
 });
 
 router.get('/:id', (req, res) => {
